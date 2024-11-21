@@ -1,10 +1,15 @@
 ##### Build Image #####
-FROM ghcr.io/rrglobal/sf-node:latest AS builder
+# simple unprotected image 
+# FROM docker AS builder        
+# secure image requires you to get a token from github
+FROM ghcr.io/rrglobal/sf-node:latest AS builder 
+
+# on secure, you need to switch to root to ensure sufficient permission
 USER root
 # FROM node AS builder
 WORKDIR /app
 
-# Copy the source code
+# Copy the source code from local machine to builder WORKDIR
 COPY . .
 
 # Install dependencies
@@ -12,7 +17,11 @@ RUN yarn
 RUN yarn build
 
 ##### Runtime Image #####
+# simple unprotected image 
+# FROM nginx AS final
+# secure image requires you to get a token from github
 FROM ghcr.io/rrglobal/sf-nginx:latest AS final
+# on secure, you need to switch to root to ensure sufficient permission
 USER root
 # FROM nginx AS final
 WORKDIR /app
